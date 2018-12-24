@@ -1,5 +1,7 @@
 cloud.google.com/go v0.34.0 h1:eOI3/cP2VTU6uZLDYAoic+eyzzB9YyGmJ7eIjl8rOPg=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
+github.com/AndrewBurian/mediatype v1.0.0 h1:zr+i1QSe62NmlzKZQIccnBl1fKkisoRnJQpvzys0zYw=
+github.com/AndrewBurian/mediatype v1.0.0/go.mod h1:p00EPq7SrKaNtLbQ4raNSunL72Xit8FfEaLjTL7Hqpc=
 github.com/AndrewBurian/powermux v1.1.0 h1:mdRgjaf+3+CAAu67pA6cwatv9ku92BmNGb7HFmvVDTU=
 github.com/AndrewBurian/powermux v1.1.0/go.mod h1:DP40Ot1oOW0NhDC3qACRalhOSLjMx+ZolGBnoBje8LU=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

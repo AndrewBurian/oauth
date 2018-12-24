@@ -75,11 +75,16 @@ func main() {
 
 	authHandler := NewOAuth2Handler(oauthConf, tokenStore, "/")
 
+	userHandler := NewUserAuth()
+
 	mux := powermux.NewServeMux()
 
-	mux.Route("/auth").MiddlewareFunc(AuthUser).
+	mux.Route("/auth").MiddlewareFunc(userHandler.AuthUser).
 		Route("/google").GetFunc(authHandler.RequestAuth).
 		Route("/redirect").GetFunc(authHandler.RedirectURL)
+
+	mux.Route("/user").PostFunc(userHandler.Signup).
+		Route("/login").PostFunc(userHandler.Login)
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
