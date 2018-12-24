@@ -19,11 +19,9 @@ import (
 func main() {
 	// Flags
 	var debug, quiet, help bool
-	var port uint
 
 	flag.BoolVar(&debug, "debug", false, "Debug verbosity")
 	flag.BoolVar(&quiet, "quiet", false, "Errors only")
-	flag.UintVar(&port, "port", 8080, "Port to bind to")
 	flag.BoolVar(&help, "help", false, "Display usage")
 	flag.Parse()
 
@@ -104,8 +102,14 @@ func main() {
 	mux.Route("/api").MiddlewareFunc(userHandler.AuthUser).
 		Route("/me").GetFunc(api.GetUser)
 
+	// Server Config
+	// ----------------------------------------
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		port = "8080"
+	}
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%s", port),
 		Handler: mux,
 	}
 
