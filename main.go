@@ -32,6 +32,8 @@ func main() {
 		return
 	}
 
+	// Logging Config
+	// ----------------------------------------
 	if debug && quiet {
 		log.Fatal("Can only set one of -quiet and -debug")
 	}
@@ -45,6 +47,8 @@ func main() {
 		log.SetLevel(log.InfoLevel)
 	}
 
+	// OAuth Config
+	// ----------------------------------------
 	domain, ok := os.LookupEnv("HOST_DOMAIN")
 	if !ok {
 		log.Fatal("Environment variable HOST_DOMAIN needs to be set")
@@ -63,28 +67,42 @@ func main() {
 	oauthConf := &oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
-		RedirectURL:  fmt.Sprintf("https://%s/auth/google/redirect", domain),
+		RedirectURL:  fmt.Sprintf("https://%s/oauth/google/redirect", domain),
 		Scopes: []string{
-			"https://www.googleapis.com/auth/bigquery",
-			"https://www.googleapis.com/auth/blogger",
+			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile",
 		},
 		Endpoint: google.Endpoint,
 	}
 
 	tokenStore := NewInMemStore()
 
+	// User Config
+	// ----------------------------------------
 	authHandler := NewOAuth2Handler(oauthConf, tokenStore, "/")
 
 	userHandler := NewUserAuth()
 
+	// API Config
+	// ----------------------------------------
+	api := &GoogleAPI{
+		conf:  oauthConf,
+		store: tokenStore,
+	}
+
+	// Router Config
+	// ----------------------------------------
 	mux := powermux.NewServeMux()
 
-	mux.Route("/auth").MiddlewareFunc(userHandler.AuthUser).
+	mux.Route("/oauth").MiddlewareFunc(userHandler.AuthUser).
 		Route("/google").GetFunc(authHandler.RequestAuth).
 		Route("/redirect").GetFunc(authHandler.RedirectURL)
 
 	mux.Route("/user").PostFunc(userHandler.Signup).
 		Route("/login").PostFunc(userHandler.Login)
+
+	mux.Route("/api").MiddlewareFunc(userHandler.AuthUser).
+		Route("/me").GetFunc(api.GetUser)
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),

@@ -49,6 +49,21 @@ func NewUserAuth() *UserAuth {
 	}
 }
 
+// GetUser pulls the User ID out of a request context
+func GetUser(r *http.Request) (string, error) {
+	u := r.Context().Value(userCtxKey)
+	if u == nil {
+		return "", fmt.Errorf("User not set in context")
+	}
+
+	userString, ok := u.(string)
+	if !ok {
+		return "", fmt.Errorf("User identifier not a string")
+	}
+
+	return userString, nil
+}
+
 // AuthUser authenticates a user by their tokens and adds user info to the request
 func (h *UserAuth) AuthUser(w http.ResponseWriter, r *http.Request, n func(w http.ResponseWriter, r *http.Request)) {
 

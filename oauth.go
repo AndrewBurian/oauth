@@ -21,6 +21,7 @@ type OAuth2Handler struct {
 // TokenStore is any object that can store a token and bind it to a specific user
 type TokenStore interface {
 	Store(r *http.Request, t *oauth2.Token) error
+	Retrieve(r *http.Request) (*oauth2.Token, error)
 }
 
 // NewOAuth2Handler creates a handler with the specfied token store
