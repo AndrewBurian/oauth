@@ -82,7 +82,7 @@ func (h *UserAuth) AuthUser(w http.ResponseWriter, r *http.Request, n func(w htt
 	}
 
 	// map token to userID
-	userId, found := h.tokenUser[token]
+	userID, found := h.tokenUser[token]
 	if !found {
 		log.Error("Token provided but not found in store")
 		http.Error(w, "Token not authorized", http.StatusForbidden)
@@ -90,7 +90,7 @@ func (h *UserAuth) AuthUser(w http.ResponseWriter, r *http.Request, n func(w htt
 	}
 
 	// store the user's ID in the request context
-	r = r.WithContext(context.WithValue(r.Context(), userCtxKey, userId))
+	r = r.WithContext(context.WithValue(r.Context(), userCtxKey, userID))
 	n(w, r)
 }
 
@@ -102,7 +102,7 @@ func contentNegotiation(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
-	if !ct.Matches(jsonType) {
+	if ct == nil || !ct.Matches(jsonType) {
 		log.Error("Failed content type negotiation, req not json")
 		http.Error(w, "Requests must be JSON encoded", http.StatusNotAcceptable)
 		return false
