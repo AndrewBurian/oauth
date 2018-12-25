@@ -75,7 +75,7 @@ func (h *UserAuth) AuthUser(w http.ResponseWriter, r *http.Request, n func(w htt
 	}
 
 	var token string
-	if n, err := fmt.Sscanf(auth, "Bearer: %s", &token); n != 1 || err != nil {
+	if n, err := fmt.Sscanf(auth, "Bearer %s", &token); n != 1 || err != nil {
 		log.WithError(err).Error("Failed to scan auth token")
 		http.Error(w, "Bad bearer token", http.StatusBadRequest)
 		return
