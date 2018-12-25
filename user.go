@@ -178,7 +178,7 @@ func (h *UserAuth) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check password
-	err := bcrypt.CompareHashAndPassword([]byte(login.Password), h.userPass[login.Username])
+	err := bcrypt.CompareHashAndPassword(h.userPass[login.Username], []byte(login.Password))
 	if err != nil {
 		log.WithError(err).Error("Password does not match")
 		http.Error(w, "Incorrect Password", http.StatusForbidden)
