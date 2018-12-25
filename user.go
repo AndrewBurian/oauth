@@ -102,7 +102,7 @@ func contentNegotiation(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
-	if ct == nil || !ct.Matches(jsonType) {
+	if ct == nil || !jsonType.Matches(ct) {
 		log.Error("Failed content type negotiation, req not json")
 		http.Error(w, "Requests must be JSON encoded", http.StatusNotAcceptable)
 		return false
